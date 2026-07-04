@@ -400,6 +400,8 @@ export function createOpenClawCodingTools(options?: {
   agentAccountId?: string;
   messageTo?: string;
   messageThreadId?: string | number;
+  /** Trusted platform-native conversation id for the active inbound turn. */
+  nativeChannelId?: string;
   sandbox?: SandboxContext | null;
   sessionKey?: string;
   /**
@@ -924,6 +926,7 @@ export function createOpenClawCodingTools(options?: {
             agentAccountId: options?.agentAccountId,
             agentTo: options?.messageTo,
             agentThreadId: options?.messageThreadId,
+            nativeChannelId: options?.nativeChannelId,
             agentDir: options?.agentDir,
             workspaceDir: workspaceRoot,
             config: options?.config,
@@ -1010,6 +1013,7 @@ export function createOpenClawCodingTools(options?: {
           agentAccountId: options?.agentAccountId,
           agentTo: options?.messageTo,
           agentThreadId: options?.messageThreadId,
+          nativeChannelId: options?.nativeChannelId,
           agentGroupId: options?.groupId ?? null,
           agentGroupChannel: options?.groupChannel ?? null,
           agentGroupSpace: options?.groupSpace ?? null,
@@ -1035,6 +1039,7 @@ export function createOpenClawCodingTools(options?: {
             ? cronCreatorToolAllowlist
             : undefined,
           currentChannelId: options?.currentChannelId,
+          currentChatType: options?.chatType,
           currentMessagingTarget: options?.currentMessagingTarget,
           currentThreadTs: options?.currentThreadTs,
           currentMessageId: options?.currentMessageId,
