@@ -21,6 +21,7 @@ import {
   planShellAuthorization,
   type ExecAuthorizationPlan,
 } from "../infra/exec-authorization-plan.js";
+import { buildAuthorizedShellCommandFromPlan } from "../infra/exec-authorization-render.js";
 import type { ExecApprovalFollowupTarget } from "./bash-tools.exec-host-shared.js";
 import type { ExecApprovalFollowupFactory } from "./bash-tools.exec-types.js";
 
@@ -656,6 +657,7 @@ describe("processGatewayAllowlist", () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "openclaw-auto-review-path-"));
     const shadowGit = path.join(tempDir, "git");
     fs.writeFileSync(shadowGit, "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+    const resolvedShadowGit = fs.realpathSync(shadowGit);
     try {
       const command = "git status";
       await configurePlanBackedCommand({
@@ -671,9 +673,9 @@ describe("processGatewayAllowlist", () => {
       });
 
       expect(defaultExecAutoReviewerMock).toHaveBeenCalledWith(
-        expect.objectContaining({ resolvedPath: shadowGit }),
+        expect.objectContaining({ resolvedPath: resolvedShadowGit }),
       );
-      expect(result).toEqual({ execCommandOverride: `${shadowGit} status` });
+      expect(result).toEqual({ execCommandOverride: `${resolvedShadowGit} status` });
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -775,13 +777,23 @@ describe("processGatewayAllowlist", () => {
       throw new Error(authorizationPlan.reason);
     }
     requiresExecApprovalMock.mockReturnValue(false);
+    const segmentSatisfiedBy: ["safeBins"] = ["safeBins"];
+    const expectedCommand = buildAuthorizedShellCommandFromPlan({
+      plan: authorizationPlan,
+      mode: "enforced",
+      segmentSatisfiedBy,
+    });
+    expect(expectedCommand.ok).toBe(true);
+    if (!expectedCommand.ok) {
+      throw new Error(expectedCommand.reason);
+    }
     evaluateShellAllowlistWithAuthorizationMock.mockReturnValue({
       allowlistMatches: [],
       analysisOk: true,
       allowlistSatisfied: true,
       segments: [{ raw: command, resolution: null, argv: ["head", "-c", "16"] }],
       segmentAllowlistEntries: [],
-      segmentSatisfiedBy: ["safeBins"],
+      segmentSatisfiedBy,
       authorizationPlan,
     });
     resolveExecHostApprovalContextMock.mockReturnValue({
