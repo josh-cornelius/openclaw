@@ -1754,11 +1754,6 @@
       "translated": "セッション"
     },
     {
-      "id": "native.android.2806eb5b11becd89",
-      "source": "Reverse session sort",
-      "translated": "セッションの並び順を反転"
-    },
-    {
       "id": "native.android.e0f10db479f627eb",
       "source": "Recent",
       "translated": "最近"
@@ -1779,13 +1774,13 @@
       "translated": "セッションを検索"
     },
     {
-      "id": "native.android.9d0765fc76c3fca5",
-      "source": "Newest",
+      "id": "native.android.dc52c5f9d7b85ec8",
+      "source": "Newest first",
       "translated": "新しい順"
     },
     {
-      "id": "native.android.7f0fea03a2e789d3",
-      "source": "Oldest",
+      "id": "native.android.78b9d0ab41446a1b",
+      "source": "Oldest first",
       "translated": "古い順"
     },
     {
@@ -10704,6 +10699,11 @@
       "translated": "パスパターンのみ。'/'、'~'、または '\\\\' を含めてください。"
     },
     {
+      "id": "native.apple.511333a8588db7e2",
+      "source": "Could not save exec approvals. Last known settings are shown; retry the change.",
+      "translated": "実行承認を保存できませんでした。最後に判明している設定を表示しています。変更を再試行してください。"
+    },
+    {
       "id": "native.apple.db0fa6b60bd859f8",
       "source": ":\\(endpoint.port)",
       "translated": ":\\(endpoint.port)"
@@ -11409,6 +11409,16 @@
       "translated": "実行承認"
     },
     {
+      "id": "native.apple.348d4adeb2afab25",
+      "source": "Loading Exec Approvals…",
+      "translated": "実行承認を読み込み中…"
+    },
+    {
+      "id": "native.apple.b2f5f038c81a4a89",
+      "source": "Retry Exec Approvals",
+      "translated": "実行承認を再試行"
+    },
+    {
       "id": "native.apple.fa9ee90b4a391979",
       "source": "Allow Canvas",
       "translated": "Canvas を許可"
@@ -11729,6 +11739,26 @@
       "translated": "次へ"
     },
     {
+      "id": "native.apple.9a186b012ec473a1",
+      "source": "The Gateway setup request failed.",
+      "translated": "Gateway のセットアップ要求が失敗しました。"
+    },
+    {
+      "id": "native.apple.52ad972e0b9498fa",
+      "source": "The Gateway setup request failed. Show details to inspect or copy the error.",
+      "translated": "Gateway のセットアップ要求が失敗しました。詳細を表示してエラーを確認またはコピーできます。"
+    },
+    {
+      "id": "native.apple.9644b964d7adea91",
+      "source": "\\(label) couldn’t complete the test.",
+      "translated": "\\(label) はテストを完了できませんでした。"
+    },
+    {
+      "id": "native.apple.f9c76663d90cff5c",
+      "source": "\\(label) couldn’t complete the test. Show details to inspect or copy the error.",
+      "translated": "\\(label) はテストを完了できませんでした。詳細を表示してエラーを確認またはコピーできます。"
+    },
+    {
       "id": "native.apple.0a6a895baa7f708e",
       "source": "Looking for AI you already use…",
       "translated": "すでにお使いのAIを探しています…"
@@ -11774,6 +11804,16 @@
       "translated": "AIの準備ができました"
     },
     {
+      "id": "native.apple.c6ec81b4e78a8a2e",
+      "source": "Setup details",
+      "translated": "セットアップの詳細"
+    },
+    {
+      "id": "native.apple.b81c10df2b290e66",
+      "source": "Copy setup details",
+      "translated": "セットアップの詳細をコピー"
+    },
+    {
       "id": "native.apple.c3ed46eded513a65",
       "source": "No AI accounts found on this Mac",
       "translated": "このMacでAIアカウントが見つかりませんでした"
@@ -11782,11 +11822,6 @@
       "id": "native.apple.08d6423b6ed142a8",
       "source": "That’s fine — you can connect one with an API key or token. If you use Claude Code, Codex, or the Gemini CLI on this Mac, sign in there first and hit “Check again”.",
       "translated": "問題ありません — APIキーまたはトークンで接続できます。このMacでClaude Code、Codex、またはGemini CLIを使用している場合は、まずそこでサインインして「再確認」を押してください。"
-    },
-    {
-      "id": "native.apple.f51a11c7f56bdb29",
-      "source": "Recommended",
-      "translated": "推奨"
     },
     {
       "id": "native.apple.d13850075df8f0f3",
@@ -13237,6 +13272,31 @@
       "id": "native.apple.e5198b803f0b5c9f",
       "source": "Control how agent shell commands are approved on this Mac.",
       "translated": "この Mac でエージェントのシェルコマンドをどのように承認するかを制御します。"
+    },
+    {
+      "id": "native.apple.4ec0e98876dd4130",
+      "source": "Loading settings…",
+      "translated": "設定を読み込み中…"
+    },
+    {
+      "id": "native.apple.15112b7a64de6801",
+      "source": "Reading the persisted policy.",
+      "translated": "永続化されたポリシーを読み込んでいます。"
+    },
+    {
+      "id": "native.apple.10ccbcb69920d863",
+      "source": "Exec Approvals Unavailable",
+      "translated": "実行承認は利用できません"
+    },
+    {
+      "id": "native.apple.f8de480303620970",
+      "source": "Settings could not be read",
+      "translated": "設定を読み込めませんでした"
+    },
+    {
+      "id": "native.apple.761db018bc2fc118",
+      "source": "Retry",
+      "translated": "再試行"
     },
     {
       "id": "native.apple.4c894d7779471cda",
