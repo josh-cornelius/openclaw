@@ -1555,6 +1555,55 @@ struct ExecApprovalsStoreRefactorTests {
     }
 
     @Test
+    func `forwarded explicit approval cannot restore a rule revoked before Mac evaluation`() async throws {
+        try await self.withTempStateDir { _ in
+            let stale = ExecAllowlistEntry(
+                pattern: "/usr/bin/printf",
+                source: "allow-always")
+            _ = try ExecApprovalsStore.updateAgentSettings(agentId: "main") { entry in
+                entry.security = .allowlist
+                entry.ask = .always
+                entry.allowlist = [stale]
+            }.get()
+            let forwardedSnapshot = ExecApprovalPolicySnapshot(
+                resolved: ExecApprovalsStore.resolve(agentId: "main"))
+
+            _ = try ExecApprovalsStore.updateAgentSettings(agentId: "main") { entry in
+                entry.allowlist = []
+            }.get()
+            let freshContext = await ExecApprovalEvaluator.evaluate(
+                command: ["/usr/bin/printf", "ok"],
+                rawCommand: nil,
+                cwd: nil,
+                envOverrides: nil,
+                agentId: "main")
+            #expect(freshContext.policySnapshot != forwardedSnapshot)
+
+            let commit = ExecApprovalExecutionCommit.build(
+                context: freshContext,
+                effectiveSecurity: .allowlist,
+                approvalSource: nil,
+                explicitlyApproved: true,
+                persistAllowlist: true,
+                delayedPolicySnapshot: forwardedSnapshot)
+            if case let .explicitAlways(_, policySnapshot, grants) = commit.authorization {
+                #expect(policySnapshot == forwardedSnapshot)
+                #expect(grants.map(\.match.pattern) == ["/usr/bin/printf"])
+            } else {
+                Issue.record("expected forwarded durable approval")
+            }
+
+            let result = ExecApprovalsStore.commitExecution(commit)
+
+            guard case .failure(.unavailable) = result else {
+                Issue.record("expected revoked forwarded approval to fail")
+                return
+            }
+            #expect(ExecApprovalsStore.resolve(agentId: "main").allowlist.isEmpty)
+        }
+    }
+
+    @Test
     func `execution commit cannot restore a revoked allow always rule`() async throws {
         try await self.withTempStateDir { _ in
             let stale = ExecAllowlistEntry(pattern: "/usr/bin/printf")
