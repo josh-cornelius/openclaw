@@ -28,7 +28,6 @@ Docs: https://docs.openclaw.ai
 
 ### Fixes
 
-- **macOS delayed exec approvals:** preserve the Gateway's prepared policy snapshot through the app socket and revalidate it under the persisted-policy lock, preventing revoked rules from being restored by a freshly evaluated host context.
 - **Codex runtime switching:** accept the bundled Codex runtime for both `codex/*` and `openai/*` model routes while keeping unsupported provider/runtime pairs rejected. (#103762)
 - **Agent abort cleanup:** serialize prompt lock reacquisition with terminal cleanup so canceled embedded runs do not self-contend on session locks for up to 60 seconds.
 - **Chutes OAuth deadlines:** bound token exchange, profile lookup, and refresh requests, and keep issued tokens when optional userinfo enrichment stalls. (#102026) Thanks @Alix-007.
