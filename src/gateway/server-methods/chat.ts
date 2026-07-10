@@ -30,6 +30,7 @@ import {
   validateChatInjectParams,
   validateChatMetadataParams,
   validateChatMessageGetParams,
+  validateChatToolTitlesParams,
   validateChatSendParams,
 } from "../../../packages/gateway-protocol/src/index.js";
 import { CHAT_SEND_SESSION_KEY_MAX_LENGTH } from "../../../packages/gateway-protocol/src/schema.js";
@@ -3337,6 +3338,59 @@ export const chatHandlers: GatewayRequestHandlers = {
     });
   },
   "chat.metadata": handleChatMetadataRequest,
+  "chat.toolTitles": async ({ params, respond, context }) => {
+    if (!validateChatToolTitlesParams(params)) {
+      respond(
+        false,
+        undefined,
+        errorShape(
+          ErrorCodes.INVALID_REQUEST,
+          `invalid chat.toolTitles params: ${formatValidationErrors(validateChatToolTitlesParams.errors)}`,
+        ),
+      );
+      return;
+    }
+    const cfg = context.getRuntimeConfig();
+    // Opt-in gate: tool titles spend utility-model tokens, so the gateway
+    // stays fully deterministic unless the operator enables them explicitly.
+    // `disabled: true` lets clients stop asking for the rest of the session.
+    if (cfg.gateway?.controlUi?.toolTitles !== true) {
+      respond(true, { titles: {}, disabled: true });
+      return;
+    }
+    const agentIdOverride = normalizeOptionalText(params.agentId);
+    const requestedAgentId = resolveRequestedChatAgentId({
+      cfg,
+      requestedSessionKey: params.sessionKey,
+      agentId: agentIdOverride,
+    });
+    const selectedAgent = validateChatSelectedAgent({
+      cfg,
+      requestedSessionKey: params.sessionKey,
+      agentId: requestedAgentId,
+    });
+    if (!selectedAgent.ok) {
+      respond(false, undefined, errorShape(ErrorCodes.INVALID_REQUEST, selectedAgent.error));
+      return;
+    }
+    try {
+      // Title generation pulls in the simple-completion runtime; load it lazily
+      // so gateways that never enable the opt-in skip that cost.
+      const { generateToolCallTitles } = await import("../chat-tool-titles.js");
+      const titles = await generateToolCallTitles({
+        cfg,
+        agentId: resolveSessionAgentId({
+          sessionKey: params.sessionKey,
+          config: cfg,
+          agentId: selectedAgent.agentId,
+        }),
+        items: params.items,
+      });
+      respond(true, { titles });
+    } catch (err) {
+      respond(false, undefined, errorShape(ErrorCodes.UNAVAILABLE, String(err)));
+    }
+  },
   "chat.message.get": async ({ params, respond, context }) => {
     if (!validateChatMessageGetParams(params)) {
       respond(

@@ -76,6 +76,7 @@ import {
   type ChatPageHost,
 } from "./chat-state.ts";
 import { renderChat, resetChatViewState, type ChatProps } from "./chat-view.ts";
+import { configureToolTitleFetcher } from "./tool-titles.ts";
 import { renderChatControls } from "./components/chat-controls.ts";
 import {
   chatPullRequestId,
@@ -1166,6 +1167,15 @@ class ChatPane extends OpenClawLightDomElement {
       return html`<main class="app-shell app-shell--booting" aria-busy="true"></main>`;
     }
     const currentAgentId = resolveChatAgentId(state);
+    // Tool rows consult the global title store while rendering; point its
+    // fetcher at this pane's connection. Requests capture session + agent at
+    // schedule time, so later renders of other panes cannot re-route them.
+    configureToolTitleFetcher({
+      client: state.connected ? state.client : null,
+      sessionKey: state.sessionKey || null,
+      agentId: currentAgentId || null,
+      onTitlesChanged: () => state.requestUpdate?.(),
+    });
     const agentDefaultModel = this.context.agents.state.agentsList?.agents.find(
       (agent) => agent.id === currentAgentId,
     )?.model?.primary;
